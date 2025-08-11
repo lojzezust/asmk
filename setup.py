@@ -1,35 +1,32 @@
 import sys
 from setuptools import setup, Extension
-from setuptools.command.install import install
+from setuptools.command.build_ext import build_ext as _build_ext
 
-class InstallWrapper(install):
+try:
+    from Cython.Build import cythonize
+    HAVE_CYTHON = True
+except ImportError:
+    HAVE_CYTHON = False
 
-    def run(self):
-        try:
-            import faiss
-        except ImportError:
-            sys.stderr.write("\nERROR: faiss package not installed (install either faiss-cpu or " \
-                             "faiss-gpu before installing this package.).\n\n")
-            sys.exit(1)
+class build_ext(_build_ext):
+    def finalize_options(self):
+        super().finalize_options()
+        import numpy as np
+        self.include_dirs.append(np.get_include())
 
-        install.run(self)
+sources = ["cython/hamming.pyx" if HAVE_CYTHON else "cython/hamming.c"]
 
+extensions = [
+    Extension(
+        "asmk.hamming",
+        sources=sources,
+        language="c"
+    )
+]
+
+ext_modules = cythonize(extensions, language_level="3") if HAVE_CYTHON else extensions
 
 setup(
-    name="asmk",
-    version="0.1",
-    description="ASMK Python implementation for ECCV'20 paper \"Learning and aggregating deep " \
-                "local descriptors for instance-level recognition\"",
-    author="Tomas Jenicek, Giorgos Tolias",
-    packages=[
-        "asmk",
-    ],
-    ext_modules=[Extension("asmk.hamming", ["cython/hamming.c"])],
-    install_requires=[
-        "numpy",
-        "pyaml",
-    ],
-    cmdclass={
-        "install": InstallWrapper,
-    },
-    zip_safe=True)
+    ext_modules=ext_modules,
+    cmdclass={"build_ext": build_ext}
+)
