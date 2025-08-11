@@ -17,7 +17,7 @@ This is an easy **pip installable** version of ASMK ([original repo](https://git
 ### From git
 
 ```bash
-pip install "git+https://github.com/lojzezust/asmk.git#egg=asmk[cpu]"
+pip install "asmk[cpu] @ git+https://github.com/lojzezust/asmk.git"
 ```
 
 ### Clone and install
@@ -33,7 +33,7 @@ pip install 'asmk[cpu]'
 ### From git
 
 ```bash
-pip install "git+https://github.com/lojzezust/asmk.git#egg=asmk[gpu]"
+pip install "asmk[gpu] @ git+https://github.com/lojzezust/asmk.git"
 ```
 
 ### Clone and install
