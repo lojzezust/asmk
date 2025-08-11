@@ -28,7 +28,7 @@ pip install 'asmk[cpu]'
 ```
 
 ## Installation (GPU)
-**NOTE:** The package also provides a [gpu] target, but has not been tested.
+**NOTE:** The package also provides a [gpu] target, but is subject to availability of `faiss-gpu` on your platform.
 
 ### From git
 
